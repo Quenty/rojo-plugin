@@ -156,6 +156,44 @@ function Plugin:startPolling()
 		end)
 end
 
+function Plugin:syncOut()
+	print("Syncing out from server...")
+
+	return self:server()
+		:andThen(function(server)
+			local project = server:getInfo():await().project
+
+			local routes = {}
+
+			for name in pairs(project.partitions) do
+				table.insert(routes, {name})
+			end
+
+			self:_pull(server, project, routes)
+
+			print("Sync successful!")
+		end)
+end
+
+function Plugin:_push(server, project, routes)
+	for index = 1, #routes do
+		local route = routes[index]
+		local partitionName = route[1]
+		local partition = project.partitions[partitionName]
+
+		local fullRoute = collectMatch(partition.target, "[^.]+")
+		for i = 2, #route do
+			table.insert(fullRoute, routes[index][i])
+		end
+		
+		local items = {}
+		
+		server:push({
+			
+		})
+	end
+end
+
 function Plugin:syncIn()
 	print("Syncing from server...")
 

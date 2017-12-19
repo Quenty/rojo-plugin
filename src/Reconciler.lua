@@ -127,4 +127,33 @@ function Reconciler.reconcileRoute(route, item)
 	return rbx
 end
 
+
+-- Shouldn't be here...
+function Reconciler.pack(rbx)
+	local properties = {}
+
+	if rbx:IsA("LuaSourceContainer") then
+		properties["Source"] = rbx.Source
+	end
+
+	local item = {
+		name = rbx.Name;
+		className = rbx.ClassName;
+		properties = properties;
+		child = Reconciler.packChildren(rbx);
+	}
+
+	return item
+end
+
+function Reconciler.packChildren(rbx)
+	local children = {}
+
+	for _, child in pairs(rbx:GetChildren()) do
+		table.insert(children, Reconciler.pack(child))
+	end
+
+	return children
+end
+
 return Reconciler

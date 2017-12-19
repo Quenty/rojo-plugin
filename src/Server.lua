@@ -31,7 +31,7 @@ function Server:_start()
 		:andThen(function(response)
 			if response.protocolVersion ~= Config.protocolVersion then
 				local message = (
-					"Found a Rojo dev server, but it's using a different protocl version, and is incompatible." ..
+					"Found a Rojo dev server, but it's using a different protocol version, and is incompatible." ..
 					"\nMake sure you have the most up-to-date version of both the Rojo plugin and server!" ..
 					"\n\nYour client is version %s, with protocol version %s." ..
 					"\nYour server is version %s, with protocol version %s." ..
@@ -69,6 +69,12 @@ function Server:read(paths)
 
 			return response.items
 		end)
+end
+
+function Server:write(data)
+	local body = HttpService:JSONEncode(data)
+
+	return self.http:post("/write", body)
 end
 
 function Server:getChanges()
